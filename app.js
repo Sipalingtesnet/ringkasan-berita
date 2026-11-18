@@ -134,12 +134,15 @@ function initFirebase() {
     // Gemini Developer API backend (free tier, no billing needed for text).
     ai = getAI(firebaseApp, { backend: new GoogleAIBackend() });
     modelOnDevice = getGenerativeModel(ai, {
-      model: "gemini-3.5-flash",
+      model: "gemini-3.5-flash-lite",
       mode: InferenceMode.PREFER_ON_DEVICE,
     });
+    // Plain cloud model (no InferenceMode): PREFER_IN_CLOUD probes the
+    // on-device Prompt API even for cloud calls, which throws
+    // "feature flag gating model execution was disabled" in browsers
+    // without Gemini Nano. A plain cloud model never touches the Prompt API.
     modelCloud = getGenerativeModel(ai, {
-      model: "gemini-3.5-flash",
-      mode: InferenceMode.PREFER_IN_CLOUD,
+      model: "gemini-3.5-flash-lite",
     });
   } catch (e) {
     console.error("Firebase init failed:", e);
@@ -318,15 +321,6 @@ async function runAnalysis() {
   $("analysis-route").textContent = t(lang, "analysisRoute");
 
   try {
-    // Initialize the on-device model first (as in runSummary) so the
-    // Prompt API probe does not throw when the on-device feature flag is
-    // off in this browser; PREFER_IN_CLOUD then falls back to the cloud.
-    if (
-      modelCloud &&
-      typeof modelCloud.initializeDeviceModel === "function"
-    ) {
-      modelCloud.initializeDeviceModel(() => {});
-    }
     const result = await modelCloud.generateContent(prompt);
     const response = result.response;
     const output = response.text();
