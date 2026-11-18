@@ -14,7 +14,6 @@ import {
   getAI,
   getGenerativeModel,
   GoogleAIBackend,
-  InferenceMode,
 } from "firebase/ai";
 import {
   initializeAppCheck,
@@ -23,7 +22,6 @@ import {
 import {
   I18N,
   t,
-  chooseSummaryMode,
   buildSummaryPrompt,
   buildAnalysisPrompt,
   renderRichText,
@@ -58,8 +56,7 @@ let lang = "id";
 let summaryLength = "short";
 let firebaseApp = null;
 let ai = null;
-let modelOnDevice = null; // PREFER_ON_DEVICE
-let modelCloud = null; // PREFER_IN_CLOUD
+let modelCloud = null; // plain cloud model (no InferenceMode)
 let appCheckOk = false;
 let onDeviceStatus = "unknown"; // available | downloading | downloadable | unavailable | unsupported
 
@@ -133,14 +130,13 @@ function initFirebase() {
 
     // Gemini Developer API backend (free tier, no billing needed for text).
     ai = getAI(firebaseApp, { backend: new GoogleAIBackend() });
-    modelOnDevice = getGenerativeModel(ai, {
-      model: "gemini-3.5-flash-lite",
-      mode: InferenceMode.PREFER_ON_DEVICE,
-    });
-    // Plain cloud model (no InferenceMode): PREFER_IN_CLOUD probes the
-    // on-device Prompt API even for cloud calls, which throws
-    // "feature flag gating model execution was disabled" in browsers
-    // without Gemini Nano. A plain cloud model never touches the Prompt API.
+    // Plain cloud model (no InferenceMode) for BOTH features. Fix #3:
+    // PREFER_ON_DEVICE makes the Firebase AI Logic SDK request the
+    // on-device model "gemini-2.0-flash-lite" internally (that name appears
+    // NOWHERE in app.js), and Google retired that model — so every short
+    // summary 404'd. A plain cloud model never touches the on-device path.
+    // The on-device availability probe (probeOnDevice) still runs, so the
+    // app still detects Gemini Nano; inference just goes through the cloud.
     modelCloud = getGenerativeModel(ai, {
       model: "gemini-3.5-flash-lite",
     });
@@ -249,8 +245,8 @@ async function runSummary() {
     setStatus(t(lang, "needConfig"), true);
     return;
   }
-  const mode = chooseSummaryMode(text);
-  const model = mode === "PREFER_ON_DEVICE" ? modelOnDevice : modelCloud;
+  const mode = "PREFER_IN_CLOUD";
+  const model = modelCloud;
   if (!model) {
     setStatus(t(lang, "needConfig"), true);
     return;
@@ -261,24 +257,9 @@ async function runSummary() {
   $("summary-card").hidden = false;
   $("summary-output").innerHTML = `<p class="spinner">${t(lang, "summarizing")}</p>`;
   $("summary-badge").textContent = "";
-  $("summary-route").textContent =
-    mode === "PREFER_ON_DEVICE"
-      ? t(lang, "routeOnDevice")(text.length)
-      : t(lang, "routeCloud")(text.length);
+  $("summary-route").textContent = t(lang, "routeCloud")(text.length);
 
   try {
-    // initializeDeviceModel() must run on/after a user gesture and before
-    // the first on-device request. Fire-and-forget: PREFER_ON_DEVICE falls
-    // back to the cloud while the model downloads.
-    if (
-      mode === "PREFER_ON_DEVICE" &&
-      model &&
-      typeof model.initializeDeviceModel === "function"
-    ) {
-      model.initializeDeviceModel((progress) => {
-        setStatus(t(lang, "modelDownloading")(Math.round(progress * 100)));
-      });
-    }
     const result = await model.generateContent(prompt);
     const response = result.response;
     const output = response.text();
@@ -286,9 +267,7 @@ async function runSummary() {
     renderBadge($("summary-badge"), engine);
     // Keep the routing reason, append how the engine was determined.
     $("summary-route").textContent =
-      (mode === "PREFER_ON_DEVICE"
-        ? t(lang, "routeOnDevice")(text.length)
-        : t(lang, "routeCloud")(text.length)) + ` (${note})`;
+      t(lang, "routeCloud")(text.length) + ` (${note})`;
     $("summary-output").innerHTML = renderRichText(output || t(lang, "emptyResult"));
     refreshStatusLine();
   } catch (e) {
