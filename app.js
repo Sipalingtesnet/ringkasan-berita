@@ -114,10 +114,11 @@ function initFirebase() {
   try {
     firebaseApp = initializeApp(firebaseConfig);
 
-    // App Check (enforced for AI Logic). Debug-token flow for local/dev use:
-    // the console prints a debug token — safelist it in the Firebase console.
+    // App Check (enforced for AI Logic). Uses the real reCAPTCHA Enterprise
+    // provider so the app works for any visitor on the deployed domain.
+    // Do NOT set FIREBASE_APPCHECK_DEBUG_TOKEN in production — a debug token
+    // is per-browser and not safelisted, so AI calls fail with 401.
     try {
-      self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
       initializeAppCheck(firebaseApp, {
         provider: new ReCaptchaEnterpriseProvider(
           RECAPTCHA_ENTERPRISE_SITE_KEY,
