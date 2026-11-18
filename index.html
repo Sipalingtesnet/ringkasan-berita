@@ -6,10 +6,10 @@
   <title>Ringkasan Berita — News Digest</title>
   <meta
     name="description"
-    content="Ringkasan Berita (News Digest): paste a news article, get a summary and a deep analysis with Firebase AI Logic hybrid inference — Gemini Nano on-device or Gemini in the cloud."
+    content="Ringkasan Berita (News Digest): paste a news article, get a summary and a deep analysis with Firebase AI Logic — Gemini in the cloud."
   />
   <link rel="stylesheet" href="./styles.css" />
-  <!-- Firebase JS SDK v12.5.0 (on-device hybrid inference needs 12.5.0+). -->
+  <!-- Firebase JS SDK v12.5.0. -->
   <script type="importmap">
     {
       "imports": {
@@ -26,8 +26,7 @@
       <div>
         <h1 data-i18n="appTitle">Ringkasan Berita</h1>
         <p class="tagline" data-i18n="appTagline">
-          Tempel teks berita, dapatkan ringkasan dan analisis. Ringkasan
-          singkat berjalan di perangkatmu (Gemini Nano), teks panjang dan
+          Tempel teks berita, dapatkan ringkasan dan analisis. Ringkasan dan
           analisis mendalam lewat cloud (Gemini).
         </p>
       </div>
@@ -94,23 +93,22 @@
 
     <details class="how">
       <summary data-i18n="howTitle">
-        Bagaimana hybrid inference bekerja di aplikasi ini?
+        Bagaimana aplikasi ini bekerja?
       </summary>
       <p data-i18n="howBody">
-        Aplikasi ini memakai Firebase AI Logic. Untuk ringkasan, teks pendek
-        (≤ 2.000 karakter) memakai mode PREFER_ON_DEVICE: model Gemini Nano di
-        Chrome Desktop mencoba menjawab di perangkat — privat, gratis, dan bisa
-        offline. Kalau perangkat tidak mendukung atau teksnya panjang, SDK
-        otomatis beralih ke model Gemini di cloud (PREFER_IN_CLOUD). Analisis
-        mendalam selalu memakai cloud karena butuh penalaran yang lebih berat.
-        Badge di atas setiap hasil menunjukkan mesin mana yang benar-benar
+        Aplikasi ini memakai Firebase AI Logic. Ringkasan dan analisis
+        mendalam berjalan di cloud (model Gemini), jadi hasilnya selalu lewat
+        cloud. Aplikasi ini tetap mengecek apakah browser mendukung model
+        on-device (lihat baris status), tapi model on-device-nya (Gemini Nano)
+        sudah tidak tersedia lagi dari Google, jadi semua permintaan lewat
+        cloud. Badge di atas setiap hasil menunjukkan mesin mana yang
         menjalankannya.
       </p>
     </details>
 
     <footer data-i18n="footer">
-      #BuildHybridAI 2026 · Dibangun dengan Firebase AI Logic (hybrid
-      inference: Gemini Nano on-device + Gemini cloud).
+      #BuildHybridAI 2026 · Dibangun dengan Firebase AI Logic (Gemini di
+      cloud).
     </footer>
   </main>
 

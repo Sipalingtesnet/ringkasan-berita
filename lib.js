@@ -10,7 +10,7 @@ export const I18N = {
   id: {
     appTitle: "Ringkasan Berita",
     appTagline:
-      "Tempel teks berita, dapatkan ringkasan dan analisis. Ringkasan singkat berjalan di perangkatmu (Gemini Nano), teks panjang dan analisis mendalam lewat cloud (Gemini).",
+      "Tempel teks berita, dapatkan ringkasan dan analisis. Ringkasan dan analisis mendalam lewat cloud (Gemini).",
     pasteLabel: "Teks berita",
     pastePlaceholder:
       "Tempel teks berita di sini (Bahasa Indonesia atau English)…\n\nContoh: berita tentang ekonomi, teknologi, olahraga, atau apa pun yang ingin kamu pahami dengan cepat.",
@@ -31,11 +31,11 @@ export const I18N = {
     routeOnDevice: (n) =>
       `Teks pendek (${n} karakter) — dicoba di perangkat dulu.`,
     routeCloud: (n) =>
-      `Teks panjang (${n} karakter) — langsung ke cloud.`,
+      `Teks (${n} karakter) — langsung ke cloud.`,
     analysisRoute: "Analisis mendalam selalu lewat cloud.",
-    howTitle: "Bagaimana hybrid inference bekerja di aplikasi ini?",
+    howTitle: "Bagaimana aplikasi ini bekerja?",
     howBody:
-      "Aplikasi ini memakai Firebase AI Logic. Untuk ringkasan, teks pendek (≤ 2.000 karakter) memakai mode PREFER_ON_DEVICE: model Gemini Nano di Chrome Desktop mencoba menjawab di perangkat — privat, gratis, dan bisa offline. Kalau perangkat tidak mendukung atau teksnya panjang, SDK otomatis beralih ke model Gemini di cloud (PREFER_IN_CLOUD). Analisis mendalam selalu memakai cloud karena butuh penalaran yang lebih berat. Badge di atas setiap hasil menunjukkan mesin mana yang benar-benar menjalankannya.",
+      "Aplikasi ini memakai Firebase AI Logic. Ringkasan dan analisis mendalam berjalan di cloud (model Gemini), jadi hasilnya selalu lewat cloud. Aplikasi ini tetap mengecek apakah browser mendukung model on-device (lihat baris status), tapi model on-device-nya (Gemini Nano) sudah tidak tersedia lagi dari Google, jadi semua permintaan lewat cloud. Badge di atas setiap hasil menunjukkan mesin mana yang menjalankannya.",
     statusConfigured: "Firebase terhubung.",
     statusPlaceholder:
       "Mode demo: isi konfigurasi Firebase di app.js untuk mengaktifkan AI. UI tetap bisa dicoba.",
@@ -56,12 +56,12 @@ export const I18N = {
     errorPrefix: "Terjadi kesalahan: ",
     emptyResult: "Tidak ada hasil.",
     footer:
-      "#BuildHybridAI 2026 · Dibangun dengan Firebase AI Logic (hybrid inference: Gemini Nano on-device + Gemini cloud).",
+      "#BuildHybridAI 2026 · Dibangun dengan Firebase AI Logic (Gemini di cloud).",
   },
   en: {
     appTitle: "News Digest",
     appTagline:
-      "Paste a news article and get a summary plus a deep analysis. Short summaries run on your device (Gemini Nano); long texts and deep analysis run in the cloud (Gemini).",
+      "Paste a news article and get a summary plus a deep analysis. Summaries and deep analysis run in the cloud (Gemini).",
     pasteLabel: "News text",
     pastePlaceholder:
       "Paste the news text here (Indonesian or English)…\n\nExample: a story about the economy, technology, sports, or anything you want to understand quickly.",
@@ -80,11 +80,11 @@ export const I18N = {
     engineNoteSdk: "reported by the SDK",
     engineNoteDetected: "detected from model availability",
     routeOnDevice: (n) => `Short text (${n} characters) — tried on-device first.`,
-    routeCloud: (n) => `Long text (${n} characters) — sent straight to the cloud.`,
+    routeCloud: (n) => `Text (${n} characters) — sent straight to the cloud.`,
     analysisRoute: "Deep analysis always runs in the cloud.",
-    howTitle: "How does hybrid inference work in this app?",
+    howTitle: "How does this app work?",
     howBody:
-      "This app uses Firebase AI Logic. For summaries, short texts (≤ 2,000 characters) use PREFER_ON_DEVICE mode: the Gemini Nano model in Chrome Desktop tries to answer on-device — private, free, and works offline. If the device does not support it, or the text is long, the SDK automatically falls back to a Gemini model in the cloud (PREFER_IN_CLOUD). Deep analysis always uses the cloud because it needs heavier reasoning. The badge above each result shows which engine actually ran it.",
+      "This app uses Firebase AI Logic. Summaries and deep analysis run in the cloud (Gemini model), so results always come from the cloud. The app still checks whether the browser supports on-device models (see the status line), but the on-device model (Gemini Nano) is no longer available from Google, so all requests go through the cloud. The badge above each result shows which engine ran it.",
     statusConfigured: "Firebase connected.",
     statusPlaceholder:
       "Demo mode: add your Firebase config in app.js to enable AI. The UI still works.",
@@ -105,7 +105,7 @@ export const I18N = {
     errorPrefix: "Something went wrong: ",
     emptyResult: "No result.",
     footer:
-      "#BuildHybridAI 2026 · Built with Firebase AI Logic (hybrid inference: on-device Gemini Nano + cloud Gemini).",
+      "#BuildHybridAI 2026 · Built with Firebase AI Logic (Gemini in the cloud).",
   },
 };
 
