@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ringkasan Berita — News Digest</title>
+  <meta
+    name="description"
+    content="Ringkasan Berita (News Digest): paste a news article, get a summary and a deep analysis with Firebase AI Logic hybrid inference — Gemini Nano on-device or Gemini in the cloud."
+  />
+  <link rel="stylesheet" href="./styles.css" />
+  <!-- Firebase JS SDK v12.5.0 (on-device hybrid inference needs 12.5.0+). -->
+  <script type="importmap">
+    {
+      "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js",
+        "firebase/ai": "https://www.gstatic.com/firebasejs/12.5.0/firebase-ai.js",
+        "firebase/app-check": "https://www.gstatic.com/firebasejs/12.5.0/firebase-app-check.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <main class="container">
+    <header>
+      <div>
+        <h1 data-i18n="appTitle">Ringkasan Berita</h1>
+        <p class="tagline" data-i18n="appTagline">
+          Tempel teks berita, dapatkan ringkasan dan analisis. Ringkasan
+          singkat berjalan di perangkatmu (Gemini Nano), teks panjang dan
+          analisis mendalam lewat cloud (Gemini).
+        </p>
+      </div>
+      <div class="lang-toggle" role="group" aria-label="Language / Bahasa">
+        <button type="button" id="lang-id" aria-pressed="true">ID</button>
+        <button type="button" id="lang-en" aria-pressed="false">EN</button>
+      </div>
+    </header>
+
+    <div class="banner" id="config-banner" hidden></div>
+
+    <section class="card" aria-label="Input">
+      <label for="article" data-i18n="pasteLabel">Teks berita</label>
+      <textarea
+        id="article"
+        data-i18n-placeholder="pastePlaceholder"
+        placeholder="Tempel teks berita di sini (Bahasa Indonesia atau English)…"
+      ></textarea>
+
+      <div class="meta-row">
+        <span id="char-count">0 karakter</span>
+        <span>
+          <span data-i18n="lengthLabel">Panjang ringkasan</span>
+          <span class="segmented" role="group" aria-label="Summary length">
+            <button type="button" id="len-short" aria-pressed="true" data-i18n="lengthShort">Singkat</button>
+            <button type="button" id="len-medium" aria-pressed="false" data-i18n="lengthMedium">Sedang</button>
+          </span>
+        </span>
+      </div>
+
+      <div class="row">
+        <button type="button" class="btn btn-primary" id="btn-summarize" data-i18n="summarizeBtn">
+          Buat Ringkasan
+        </button>
+        <button type="button" class="btn btn-secondary" id="btn-analyze" data-i18n="analyzeBtn">
+          Analisis Mendalam
+        </button>
+        <button type="button" class="btn" id="btn-sample" data-i18n="sampleBtn">
+          Coba contoh berita
+        </button>
+        <button type="button" class="btn" id="btn-clear" data-i18n="clearBtn">
+          Bersihkan
+        </button>
+      </div>
+
+      <p class="status" id="status-line">
+        <span class="dot" id="status-dot"></span><span id="status-text"></span>
+      </p>
+    </section>
+
+    <section class="card result" id="summary-card" hidden>
+      <h2 data-i18n="summaryHeading">Ringkasan</h2>
+      <span class="badge" id="summary-badge"></span>
+      <p class="badge-note" id="summary-route"></p>
+      <div class="output" id="summary-output"></div>
+    </section>
+
+    <section class="card result" id="analysis-card" hidden>
+      <h2 data-i18n="analysisHeading">Analisis Mendalam</h2>
+      <span class="badge cloud" id="analysis-badge"></span>
+      <p class="badge-note" id="analysis-route"></p>
+      <div class="output" id="analysis-output"></div>
+    </section>
+
+    <details class="how">
+      <summary data-i18n="howTitle">
+        Bagaimana hybrid inference bekerja di aplikasi ini?
+      </summary>
+      <p data-i18n="howBody">
+        Aplikasi ini memakai Firebase AI Logic. Untuk ringkasan, teks pendek
+        (≤ 2.000 karakter) memakai mode PREFER_ON_DEVICE: model Gemini Nano di
+        Chrome Desktop mencoba menjawab di perangkat — privat, gratis, dan bisa
+        offline. Kalau perangkat tidak mendukung atau teksnya panjang, SDK
+        otomatis beralih ke model Gemini di cloud (PREFER_IN_CLOUD). Analisis
+        mendalam selalu memakai cloud karena butuh penalaran yang lebih berat.
+        Badge di atas setiap hasil menunjukkan mesin mana yang benar-benar
+        menjalankannya.
+      </p>
+    </details>
+
+    <footer data-i18n="footer">
+      #BuildHybridAI 2026 · Dibangun dengan Firebase AI Logic (hybrid
+      inference: Gemini Nano on-device + Gemini cloud).
+    </footer>
+  </main>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
