@@ -134,11 +134,11 @@ function initFirebase() {
     // Gemini Developer API backend (free tier, no billing needed for text).
     ai = getAI(firebaseApp, { backend: new GoogleAIBackend() });
     modelOnDevice = getGenerativeModel(ai, {
-      model: "gemini-2.0-flash",
+      model: "gemini-3.5-flash",
       mode: InferenceMode.PREFER_ON_DEVICE,
     });
     modelCloud = getGenerativeModel(ai, {
-      model: "gemini-2.0-flash",
+      model: "gemini-3.5-flash",
       mode: InferenceMode.PREFER_IN_CLOUD,
     });
   } catch (e) {
@@ -318,6 +318,15 @@ async function runAnalysis() {
   $("analysis-route").textContent = t(lang, "analysisRoute");
 
   try {
+    // Initialize the on-device model first (as in runSummary) so the
+    // Prompt API probe does not throw when the on-device feature flag is
+    // off in this browser; PREFER_IN_CLOUD then falls back to the cloud.
+    if (
+      modelCloud &&
+      typeof modelCloud.initializeDeviceModel === "function"
+    ) {
+      modelCloud.initializeDeviceModel(() => {});
+    }
     const result = await modelCloud.generateContent(prompt);
     const response = result.response;
     const output = response.text();
